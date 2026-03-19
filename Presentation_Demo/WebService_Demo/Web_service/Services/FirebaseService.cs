@@ -10,6 +10,16 @@ public class FirebaseService
         _http = http;
     }
 
+    // ➕ Đăng ký (POST → auto key)
+    public async Task<bool> RegisterUser(UserModel user)
+    {
+        var jsonContent = JsonSerializer.Serialize(user);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await _http.PostAsync($"{_baseUrl}/users.json", content);
+        return response.IsSuccessStatusCode;
+    }
+
     // 📥 Lấy tất cả users
     public async Task<Dictionary<string, UserModel>> GetUsers()
     {
@@ -28,10 +38,18 @@ public class FirebaseService
     }
 
     // 🔍 Tìm user
-    public async Task<UserModel?> FindUser(string username)
+    public async Task<(string? userId, UserModel? user)> FindUser(string username)
     {
         var users = await GetUsers();
 
-        return users.Values.FirstOrDefault(x => x.username == username);
+        foreach (var item in users)
+        {
+            if (item.Value.username == username)
+            {
+                return (item.Key, item.Value);
+            }
+        }
+
+        return (null, null);
     }
 }
