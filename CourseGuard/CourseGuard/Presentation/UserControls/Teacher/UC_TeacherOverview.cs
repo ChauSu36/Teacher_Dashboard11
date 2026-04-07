@@ -4,6 +4,9 @@
  * Layer: Presentation (UserControls/Teacher)
  * Vai trò: Hiển thị tổng quan dành cho Giảng viên - thống kê khóa học, học viên và danh sách khóa học đang dạy.
  * Phụ thuộc: DatabaseAction (Infrastructure) để truy vấn trực tiếp dữ liệu.
+ *
+ * Lưu ý: Toàn bộ UI được khởi tạo trong UC_TeacherOverview.Designer.cs → InitializeComponent().
+ *        File này chỉ chứa logic dữ liệu và xử lý sự kiện.
  */
 using System;
 using System.Collections.Generic;
@@ -18,23 +21,14 @@ namespace CourseGuard.Presentation.UserControls.Teacher
 {
     public partial class UC_TeacherOverview : UserControl
     {
-        // ── TeacherId được set từ ngoài (TeacherDashboard truyền vào) ──
+        // ── TeacherId được set từ ngoài (TeacherDashboard truyền vào) ──────────
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int TeacherId { get; set; } = 0;
 
-        // ── Card controls (built dynamically in InitializeCards) ──
-        private Label lblCardCourseValue;
-        private Label lblCardCourseLabel;
-        private Label lblCardActiveValue;
-        private Label lblCardActiveLabel;
-        private Label lblCardStudentValue;
-        private Label lblCardStudentLabel;
-
-        // ── Constructor ───────────────────────────────────────────────
+        // ── Constructor ──────────────────────────────────────────────────────
         public UC_TeacherOverview()
         {
             InitializeComponent();
-            InitializeCards();
 
             this.Load += (s, e) =>
             {
@@ -48,32 +42,9 @@ namespace CourseGuard.Presentation.UserControls.Teacher
             this.TeacherId = teacherId;
         }
 
-        // ── Dữ liệu ──────────────────────────────────────────────────
+        // ── Tải dữ liệu thống kê ────────────────────────────────────────────
 
         /// <summary>
-        /// Xây dựng các stat card (thẻ thống kê) theo dynamic layout.
-        /// Gọi trong constructor sau InitializeComponent().
-        /// </summary>
-        private void InitializeCards()
-        {
-            // ── Card 1: Tổng Khóa Học ───────────────────────
-            pnlCardCourses.Controls.Add(
-                BuildStatCard("📚", "0", "Tổng Khóa Học",
-                    Color.FromArgb(37, 99, 235), Color.FromArgb(219, 234, 254),
-                    out lblCardCourseValue, out lblCardCourseLabel));
-
-            // ── Card 2: Đang Hoạt Động ──────────────────────
-            pnlCardActive.Controls.Add(
-                BuildStatCard("✅", "0", "Đang Hoạt Động",
-                    Color.FromArgb(5, 150, 105), Color.FromArgb(209, 250, 229),
-                    out lblCardActiveValue, out lblCardActiveLabel));
-
-            // ── Card 3: Tổng Học Viên ───────────────────────
-            pnlCardStudents.Controls.Add(
-                BuildStatCard("👥", "0", "Tổng Học Viên",
-                    Color.FromArgb(124, 58, 237), Color.FromArgb(237, 233, 254),
-                    out lblCardStudentValue, out lblCardStudentLabel));
-        }
         /// Lấy các con số thống kê từ DB: tổng khóa học, khóa hoạt động, tổng học viên.
         /// Query trực tiếp qua DatabaseAction.ExecuteScalar.
         /// </summary>
@@ -111,7 +82,7 @@ namespace CourseGuard.Presentation.UserControls.Teacher
                         INNER JOIN COURSES c ON e.COURSE_ID = c.ID
                         WHERE c.TEACHER_ID = @tid AND e.STATUS = 'APPROVED'", pStudents));
 
-                // Cập nhật thẻ
+                // Cập nhật Labels trên các thẻ (được khai báo trong Designer.cs)
                 lblCardCourseValue.Text = totalCourses.ToString();
                 lblCardActiveValue.Text = activeCourses.ToString();
                 lblCardStudentValue.Text = totalStudents.ToString();
@@ -121,6 +92,8 @@ namespace CourseGuard.Presentation.UserControls.Teacher
                 MessageBox.Show("Lỗi tải thống kê: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        // ── Tải danh sách khóa học ──────────────────────────────────────────
 
         /// <summary>
         /// Lấy danh sách khóa học của giảng viên kèm số học viên từ DB.
@@ -160,6 +133,8 @@ namespace CourseGuard.Presentation.UserControls.Teacher
             }
         }
 
+        // ── Định dạng DataGridView ───────────────────────────────────────────
+
         private void StyleDataGrid()
         {
             dgvCourses.EnableHeadersVisualStyles = false;
@@ -177,91 +152,6 @@ namespace CourseGuard.Presentation.UserControls.Teacher
             dgvCourses.DefaultCellStyle.SelectionForeColor = ColorPalette.LightMode.TextPrimary;
             dgvCourses.DefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
             dgvCourses.RowTemplate.Height = 36;
-        }
-
-        // ── Xây dựng UI (statcard helper) ──────────────────────────
-
-        /// <summary>
-        /// Factory tạo stat card dùng TableLayoutPanel lồng nhau.
-        /// Layout: strip (5px) | [icon span 2 rows] | [số lớn row0] / [mô tả row1]
-        /// </summary>
-        private Panel BuildStatCard(
-            string icon, string value, string desc,
-            Color accent, Color bgIcon,
-            out Label valueLabel, out Label descLabel)
-        {
-            // ── Vỏ ngoài card ────────────────────────────────
-            var card = new Panel { BackColor = Color.White };
-
-            // Viền màu trái (5 px)
-            var strip = new Panel
-            {
-                Dock = DockStyle.Left,
-                Width = 5,
-                BackColor = accent
-            };
-            card.Controls.Add(strip);
-
-            // ── TableLayoutPanel bên trong (2 cột × 2 hàng) ──
-            // Cột 0: icon (cố định 72px)  |  Cột 1: số + mô tả (fill)
-            // Hàng 0: số lớn (55%)        |  Hàng 1: mô tả (45%)
-            var tbl = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 2,
-                BackColor = Color.Transparent,
-                CellBorderStyle = TableLayoutPanelCellBorderStyle.None,
-                Padding = new Padding(10, 0, 10, 0)
-            };
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72F));  // icon
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));  // text
-            tbl.RowStyles.Add(new RowStyle(SizeType.Percent, 55F));          // số
-            tbl.RowStyles.Add(new RowStyle(SizeType.Percent, 45F));          // mô tả
-
-            // ── Icon — chiếm toàn bộ 2 hàng ─────────────────
-            var iconLbl = new Label
-            {
-                Text = icon,
-                Font = new Font("Segoe UI Emoji", 22F),
-                ForeColor = accent,
-                BackColor = bgIcon,
-                AutoSize = false,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Margin = new Padding(0, 8, 8, 8)
-            };
-            tbl.Controls.Add(iconLbl, 0, 0);
-            tbl.SetRowSpan(iconLbl, 2);
-
-            // ── Số lớn (hàng 0, cột 1) ───────────────────────
-            valueLabel = new Label
-            {
-                Text = value,
-                Font = new Font("Segoe UI", 22F, FontStyle.Bold),
-                ForeColor = accent,
-                AutoSize = false,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.BottomLeft,
-                Margin = new Padding(0, 6, 0, 2)
-            };
-            tbl.Controls.Add(valueLabel, 1, 0);
-
-            // ── Mô tả (hàng 1, cột 1) ────────────────────────
-            descLabel = new Label
-            {
-                Text = desc,
-                Font = new Font("Segoe UI", 9.5F),
-                ForeColor = ColorPalette.LightMode.TextSecondary,
-                AutoSize = false,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.TopLeft,
-                Margin = new Padding(0, 2, 0, 6)
-            };
-            tbl.Controls.Add(descLabel, 1, 1);
-
-            card.Controls.Add(tbl);
-            return card;
         }
     }
 }
