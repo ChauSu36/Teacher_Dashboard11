@@ -48,15 +48,12 @@ namespace CourseGuard.Presentation.Forms.Teacher
             this.btnOverview = new System.Windows.Forms.Button();
             this.pnlLogo = new System.Windows.Forms.Panel();
             this.lblLogo = new System.Windows.Forms.Label();
-            this.pnlHeader = new System.Windows.Forms.Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
             this.pnlMainboard = new System.Windows.Forms.Panel();
             this.pnlSidebar.SuspendLayout();
             this.pnlSubMenuMonitoring.SuspendLayout();
             this.pnlSubMenuTesting.SuspendLayout();
             this.pnlSubMenuCourseDocs.SuspendLayout();
             this.pnlLogo.SuspendLayout();
-            this.pnlHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlSidebar
@@ -392,33 +389,13 @@ namespace CourseGuard.Presentation.Forms.Teacher
             this.lblLogo.Text = "COURSE GUARD";
             this.lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // pnlHeader
-            // 
-            this.pnlHeader.BackColor = System.Drawing.Color.White;
-            this.pnlHeader.Controls.Add(this.lblTitle);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(260, 0);
-            this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1020, 60);
-            this.pnlHeader.TabIndex = 1;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblTitle.Location = new System.Drawing.Point(20, 15);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(110, 25);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Tổng Quan";
-            // 
             // pnlMainboard
             // 
             this.pnlMainboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.pnlMainboard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMainboard.Location = new System.Drawing.Point(260, 60);
+            this.pnlMainboard.Location = new System.Drawing.Point(260, 0);
             this.pnlMainboard.Name = "pnlMainboard";
-            this.pnlMainboard.Size = new System.Drawing.Size(1020, 660);
+            this.pnlMainboard.Size = new System.Drawing.Size(1020, 720);
             this.pnlMainboard.TabIndex = 2;
             // 
             // TeacherDashboard
@@ -427,7 +404,6 @@ namespace CourseGuard.Presentation.Forms.Teacher
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.pnlMainboard);
-            this.Controls.Add(this.pnlHeader);
             this.Controls.Add(this.pnlSidebar);
             this.Name = "TeacherDashboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -438,8 +414,6 @@ namespace CourseGuard.Presentation.Forms.Teacher
             this.pnlSubMenuTesting.ResumeLayout(false);
             this.pnlSubMenuCourseDocs.ResumeLayout(false);
             this.pnlLogo.ResumeLayout(false);
-            this.pnlHeader.ResumeLayout(false);
-            this.pnlHeader.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -447,7 +421,6 @@ namespace CourseGuard.Presentation.Forms.Teacher
         #endregion
 
         private System.Windows.Forms.Panel pnlSidebar;
-        private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Panel pnlMainboard;
         private System.Windows.Forms.Panel pnlLogo;
         private System.Windows.Forms.Label lblLogo;
@@ -468,6 +441,5 @@ namespace CourseGuard.Presentation.Forms.Teacher
         private System.Windows.Forms.Button btnGroupMonitoring;
         private System.Windows.Forms.Button btnNotifications;
         private System.Windows.Forms.Button btnLogout;
-        private System.Windows.Forms.Label lblTitle;
     }
 }

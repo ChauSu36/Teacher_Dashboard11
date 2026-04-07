@@ -27,7 +27,7 @@ namespace CourseGuard.Application.Services
         {
             _httpClient = new HttpClient();
             // Dựa vào Port 5248 từ file appsettings.json của Web_service
-            _httpClient.BaseAddress = new Uri("http://localhost:5248/");
+            _httpClient.BaseAddress = new Uri("http://localhost:5199/");
         }
 
         public async Task<List<NotificationModel>> GetNotificationsAsync(int userId)

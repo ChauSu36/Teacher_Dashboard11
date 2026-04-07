@@ -1,4 +1,4 @@
-﻿using CourseGuard.Core.Models;
+using CourseGuard.Core.Models;
 using CourseGuard.Presentation.Forms.Login;
 using CourseGuard.Presentation.Forms.Teacher;
 using System;
@@ -42,7 +42,7 @@ namespace CourseGuard.Presentation.Forms.Admin
                             dashboard = new AdminDashboard(user);
                             break;
                         case "TEACHER":
-                            var teacherForm = new TeacherDashboard();
+                            var teacherForm = new TeacherDashboard(user);
                             this.Hide();
                             teacherForm.ShowDialog();
                             this.Close();

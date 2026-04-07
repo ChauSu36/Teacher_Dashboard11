@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CourseGuard.Core.Models;
 using CourseGuard.Presentation.UserControls.Teacher;
 
 namespace CourseGuard.Presentation.Forms.Teacher
@@ -8,14 +9,21 @@ namespace CourseGuard.Presentation.Forms.Teacher
     public partial class TeacherDashboard : Form
     {
         private UserControl activeUserControl = null;
+        private int _currentTeacherId = 0;
 
         public TeacherDashboard()
         {
             InitializeComponent();
             HideAllSubMenus();
-            
-            // To ensure hover styling applies manually without designer limitations
             AttachHoverEvents();
+        }
+
+        public TeacherDashboard(UserModel user) : this()
+        {
+            _currentTeacherId = user?.Id ?? 0;
+            // Load màn hình Tổng quan mặc định khi vừa mở
+            LoadUserControl(new UC_TeacherOverview(_currentTeacherId));
+            UpdateTitle("Tổng Quan");
         }
 
         public void LoadUserControl(UserControl uc)
@@ -75,7 +83,7 @@ namespace CourseGuard.Presentation.Forms.Teacher
 
         private void UpdateTitle(string title)
         {
-            lblTitle.Text = title;
+            // pnlHeader đã được xóa; tiêu đề được hiển thị bởi mỗi UserControl
         }
 
         private void btnGroupCourseDocs_Click(object sender, EventArgs e)
@@ -139,6 +147,7 @@ namespace CourseGuard.Presentation.Forms.Teacher
         {
             HideAllSubMenus();
             UpdateTitle("Tổng Quan");
+            LoadUserControl(new UC_TeacherOverview(_currentTeacherId));
         }
 
         private void btnNotifications_Click(object sender, EventArgs e)
